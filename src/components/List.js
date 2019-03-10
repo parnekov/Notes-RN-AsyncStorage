@@ -1,24 +1,33 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import Checkbox from './Checkbox';
+import PushNotification from 'react-native-push-notification';
 
 export default class List extends Component {
+
+  pushNotify = (text) => {
+    const txt = `You choose - "${text}" note`;
+    PushNotification.localNotificationSchedule({
+      message: txt, // (required)
+      date: new Date(Date.now()),
+    });
+  }
 
   renderItem = (item, i) => {
     const {onItemCompleted, onRemoveItem} = this.props
     const itemStyle = item.completed ? [styles.item, styles.completed] : styles.item
     return (
-      <View key={i} style={itemStyle}>
+      <TouchableOpacity key={i} style={itemStyle} onPress={()=>this.pushNotify(item.label)}>
         <Text> {item.label} </Text>
         <View style={styles.rightSection}>
         <Checkbox
             isChecked={item.completed}
             onToggle={() => onItemCompleted(i)}/>
-          <TouchableOpacity onPress={() => onRemoveItem(i)}>
+          <TouchableOpacity onPress={() => onRemoveItem(i, item.label)}>
             <Text style={styles.remove}> &times; </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 

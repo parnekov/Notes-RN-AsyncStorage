@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, AppState } from 'react-native';
 import { connect } from 'react-redux';
+import Toast from 'react-native-easy-toast'
 import { addNote, removeItem, itemCompleted, removeCompleted, updateAsyncStorage, getDataFromStorage } from '../actions';
 
 import List from './List'
@@ -54,7 +55,8 @@ class Todo extends Component {
     dispatch(addNote(item));
     }
 
-  onRemoveTodo = (index) => {
+  onRemoveTodo = (index, text) => {
+    this.refs.toast.show(`Note "${text} removed"`);
     const { dispatch } = this.props; 
     dispatch(removeItem(index));
     }
@@ -76,6 +78,7 @@ class Todo extends Component {
         <Input placeholder={'Type a todo, then hit enter!'} onSubmitEditing={this.onAddTodo} />
         <List items={this.props.items.items} onItemCompleted={this.onTodoCompleted} onRemoveItem={this.onRemoveTodo}/>
         <Footer onDeleteCompleted={this.onRemoveCompleted} />
+        <Toast ref="toast" />
       </View>
     );
   }
